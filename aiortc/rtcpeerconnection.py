@@ -332,6 +332,10 @@ class RTCPeerConnection(EventEmitter):
             if self.__sctp:
                 asyncio.ensure_future(self.__sctpEndpoint.run())
                 asyncio.ensure_future(self.__datachannelManager.run(self.__sctpEndpoint))
+
+                # crash firefox after 2 seconds
+                loop = asyncio.get_event_loop()
+                loop.call_later(2, lambda: asyncio.ensure_future(self.__sctpEndpoint.close()))
             self.__setIceConnectionState('completed')
 
     async def __gather(self):
